@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default function Textform(props) {
+  const apiKey = process.env.REACT_APP_API_KEY;
   const handleUpClick = () => {
     console.log("converted into Uppercase");
     let n = text.toUpperCase();
@@ -16,6 +18,18 @@ export default function Textform(props) {
     let n = text.replace(text, " ");
     setText(n);
   };
+  const handleSpClick = () => {
+    var utterance = new SpeechSynthesisUtterance(text);
+    speechSynthesis.speak(utterance);
+  };
+  const handleGcClick = async () => {
+    const genAi = new GoogleGenerativeAI(apiKey);
+    const model = genAi.getGenerativeModel({
+      model: "gemini-pro",
+    });
+    const r = await model.generateContent(text);
+    document.getElementById("prediction").innerText = `${r.response.text()}`;
+  };
   const handleExtraSpaces = () => {
     let newText = text.split(/[ ]+/);
     setText(newText.join(" "));
@@ -25,11 +39,17 @@ export default function Textform(props) {
     text.select();
     navigator.clipboard.writeText(text.value);
   };
+  // const handleGenCopy = () => {
+  //   var gencont = document.getElementById("prediction");
+  //   gencont.select();
+  //   navigator.clipboard.writeText(gencont.value);
+  // };
   const handleOnChange = (event) => {
     console.log("converted");
     setText(event.target.value);
   };
   const [text, setText] = useState("");
+
   return (
     <>
       <div
@@ -76,6 +96,20 @@ export default function Textform(props) {
         </button>
         <button
           type="button"
+          className="btn btn-success mx-1 my-1"
+          onClick={handleSpClick}
+        >
+          Speak
+        </button>
+        <button
+          type="button"
+          className="btn btn-success mx-1 my-1"
+          onClick={handleGcClick}
+        >
+          GenContent
+        </button>
+        <button
+          type="button"
           className="btn btn-primary mx-1 my-1"
           onClick={handleExtraSpaces}
         >
@@ -88,6 +122,13 @@ export default function Textform(props) {
         >
           Copy Text
         </button>
+        {/* <button
+          type="button"
+          className="btn btn-success mx-1 my-1"
+          onClick={handleGenCopy}
+        >
+          Copy GenContent
+        </button> */}
       </div>
       <div
         className="container my-3"
@@ -114,6 +155,10 @@ export default function Textform(props) {
         <h2>Preview</h2>
         <p>
           {text.length > 0 ? text : "Write something above to preview it here"}
+        </p>
+        <h2>AI Generated Content</h2>
+        <p>
+          <span id="prediction"></span>
         </p>
       </div>
     </>
