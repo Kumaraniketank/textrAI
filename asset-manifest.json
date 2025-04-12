@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/textrAI/static/css/main.03856220.css",
+    "main.js": "/textrAI/static/js/main.16007f5e.js",
+    "static/js/787.28cb0dcd.chunk.js": "/textrAI/static/js/787.28cb0dcd.chunk.js",
+    "static/media/bg.jpg": "/textrAI/static/media/bg.acae6f94f2807e462b02.jpg",
+    "index.html": "/textrAI/index.html",
+    "main.03856220.css.map": "/textrAI/static/css/main.03856220.css.map",
+    "main.16007f5e.js.map": "/textrAI/static/js/main.16007f5e.js.map",
+    "787.28cb0dcd.chunk.js.map": "/textrAI/static/js/787.28cb0dcd.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.03856220.css",
+    "static/js/main.16007f5e.js"
+  ]
+}
