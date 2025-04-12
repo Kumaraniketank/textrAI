@@ -9,8 +9,10 @@ export default function Navbar(props) {
       data-bs-theme="dark"
     >
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">
-          {props.title}
+        <a className="navbar-brand" href="/">
+          <b>
+            <i>{props.title}</i>
+          </b>
         </a>
         <button
           className="navbar-toggler"
@@ -26,15 +28,14 @@ export default function Navbar(props) {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">
-                Home
-              </a>
+              <b>
+                <i>
+                  <h1 style={{ color: "Highlight", fontSize: "16px" }}>
+                    🧑‍💻Kumar Aniket
+                  </h1>
+                </i>
+              </b>
             </li>
-            {/* <li className="nav-item">
-              <a className="nav-link" href="#">
-                About
-              </a>
-            </li> */}
           </ul>
           {/* <form className="d-flex" role="search">
             <input

@@ -20,7 +20,7 @@ function App() {
 
   return (
     <>
-      <Navbar title="TEXTRA" mode={mode} toggleMode={toggleMode} />
+      <Navbar title="TEXTRA-AI" mode={mode} toggleMode={toggleMode} />
 
       <div className="container">
         {<Textform heading=" Write the text to convert below" />}

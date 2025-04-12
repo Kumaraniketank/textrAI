@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default function Textform(props) {
   const apiKey = process.env.REACT_APP_API_KEY;
+  const [text, setText] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
   const handleUpClick = () => {
     console.log("converted into Uppercase");
     let n = text.toUpperCase();
@@ -25,7 +28,7 @@ export default function Textform(props) {
   const handleGcClick = async () => {
     const genAi = new GoogleGenerativeAI(apiKey);
     const model = genAi.getGenerativeModel({
-      model: "gemini-pro",
+      model: "gemini-2.0-flash",
     });
     const r = await model.generateContent(text);
     document.getElementById("prediction").innerText = `${r.response.text()}`;
@@ -39,16 +42,44 @@ export default function Textform(props) {
     text.select();
     navigator.clipboard.writeText(text.value);
   };
-  // const handleGenCopy = () => {
-  //   var gencont = document.getElementById("prediction");
-  //   gencont.select();
-  //   navigator.clipboard.writeText(gencont.value);
-  // };
+  const handlespeech = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Speech Recognition is not supported in this browser.");
+      return;
+    }
+
+    if (!recognitionRef.current) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.lang = "en-US";
+      recognitionRef.current.interimResults = false;
+
+      recognitionRef.current.onresult = (event) => {
+        const transcript =
+          event.results[event.results.length - 1][0].transcript;
+        setText((prev) => prev + " " + transcript);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+
+    if (!isListening) {
+      recognitionRef.current.start();
+      setIsListening(true);
+    } else {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    }
+  };
   const handleOnChange = (event) => {
     console.log("converted");
     setText(event.target.value);
   };
-  const [text, setText] = useState("");
 
   return (
     <>
@@ -64,11 +95,13 @@ export default function Textform(props) {
             className="form-control"
             value={text}
             onChange={handleOnChange}
-            // style={{
-            //   backgroundColor: "props.mode === 'dark' ? 'black' : 'white'",
-            //   color: props.mode === "dark" ? "white" : "black",
-            // }}
-            placeholder="कुछ वाक्य लिखें✍️ 👇"
+            style={{
+              backgroundColor: "transparent",
+              border: "2px",
+              color: "yellowgreen",
+              outline: "2px solid",
+            }}
+            placeholder="Write here✍️ 👇"
             id="textbox"
             rows="8"
           ></textarea>
@@ -122,13 +155,13 @@ export default function Textform(props) {
         >
           Copy Text
         </button>
-        {/* <button
+        <button
           type="button"
           className="btn btn-success mx-1 my-1"
-          onClick={handleGenCopy}
+          onClick={handlespeech}
         >
-          Copy GenContent
-        </button> */}
+          {isListening ? "🔇" : "🎙️"}
+        </button>
       </div>
       <div
         className="container my-3"
@@ -158,7 +191,9 @@ export default function Textform(props) {
         </p>
         <h2>AI Generated Content</h2>
         <p>
-          <span id="prediction"></span>
+          <b>
+            <span id="prediction"></span>
+          </b>
         </p>
       </div>
     </>
